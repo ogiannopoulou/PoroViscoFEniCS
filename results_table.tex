@@ -1,0 +1,28 @@
+ 
+\begin{table}[H]
+\centering
+\caption{Verification summary for PoroViscoFEniCS.}
+\label{tab:verification}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lccc}
+\toprule
+Test & Quantity & Numerical & Analytical \\
+\midrule
+Terzaghi & $c_v$ & $1.80\times10^{-1}$~m$^2$/s & $1.80\times10^{-1}$~m$^2$/s \\
+ & final $p(H/2)$ & $0.0$~Pa & $0.0$~Pa \\
+\midrule
+Stress relaxation & $E(0)$ & $1.80\times10^{8}$~Pa & $1.80\times10^{8}$~Pa \\
+ & $E(\infty)$ & $1.00\times10^{8}$~Pa & $1.00\times10^{8}$~Pa \\
+ & $E(0)/E(\infty)$ & $1.800$ & $1.800$ \\
+\midrule
+Coupled VE & Drained $u_d$ & $0.5556$~mm & $0.5556$~mm \\
+ & VE limit $u_\infty$ & $0.921$~mm & $0.9259$~mm \\
+ & Enhancement & $1.657$ & $1.6667$ \\
+\midrule
+GPMF-style & Drained $u_d$ & $0.5556$~mm & $0.5556$~mm \\
+($k=5\times10^{-15}$) & VE limit $u_\infty$ & $0.926$~mm & $0.9259$~mm \\
+ & Enhancement & $1.667$ & $1.6667$ \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
