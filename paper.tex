@@ -1,5 +1,6 @@
-\documentclass[review,11pt]{elsarticle}
+\documentclass[a4paper,fleqn,longmktitle]{cas-sc}
 
+\usepackage[authoryear]{natbib}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{graphicx}
 \usepackage{hyperref}
@@ -10,31 +11,30 @@
 \usepackage[margin=10pt,font=small,labelfont=bf]{caption}
 \usepackage{subcaption}
 \usepackage{bm}
-
-\journal{Computers \& Geosciences}
+\usepackage{setspace}
 
 \graphicspath{{figures/}}
 
 \begin{document}
 
-\begin{frontmatter}
+\let\WriteBookmarks\relax
+\shorttitle{PoroViscoFEniCS}
+\shortauthors{Giannopoulou}
 
-\title{PoroViscoFEniCS: A generalized poro-viscoelastic model using FEniCS}
+\title [mode = title]{PoroViscoFEniCS: A generalized poro-viscoelastic model using FEniCS}
 
-\author[1]{Ourania Giannopoulou\corref{cor1}}
+\author[1]{Ourania Giannopoulou}[%
+orcid=0000-0002-0773-2939%
+]
+\cortext[cor1]{Corresponding author}
 \ead{ourania.giannopoulou@gmail.com}
-\cortext[cor1]{Corresponding author.}
-\fnref{fn1}
-\fntext[fn1]{ORCID: 0000-0002-0773-2939}
-
-\affiliation[1]{organization={Independent Researcher},
-  city={Rome},
-  country={Italy}}
+\address[1]{Independent Researcher, Rome, Italy}
+\fntext[fn1]{Correspondence: ourania.giannopoulou@gmail.com}
 
 \begin{abstract}
 We present PoroViscoFEniCS, an open-source finite element solver for coupled
 poro-viscoelasticity built on the FEniCS platform. The code extends the
-Generalized Poroelastic Model (GPMF) of Haagenson et al.\ (2020) by
+Generalized Poroelastic Model (GPMF) of \citet{Haagenson2020} by
 incorporating viscoelastic creep behavior through the Generalized Maxwell
 (Wiechert) model, enabling the simulation of time-dependent deformation in
 fluid-saturated porous media. The governing equations---conservation of
@@ -55,12 +55,24 @@ post-seismic deformation, fluid-induced seismicity, and aquifer
 compaction.
 \end{abstract}
 
-\begin{keyword}
+\begin{highlights}
+\item An open-source FEniCS solver for coupled poro-viscoelasticity.
+\item Generalized Maxwell (Wiechert) model with internal viscous strain variables.
+\item Mixed DG0-BDM1-CG1 finite element formulation with monolithic solve.
+\item Verified against Terzaghi, stress relaxation, and GPMF-style benchmarks.
+\item Agreement to within $0.6\%$ across all verification tests.
+\end{highlights}
+
+\begin{keywords}
 poroelasticity \sep viscoelasticity \sep FEniCS \sep mixed finite elements
 \sep generalized Maxwell model \sep open-source
-\end{keyword}
+\end{keywords}
 
-\end{frontmatter}
+\maketitle
+
+\printcredits
+
+\doublespacing
 
 \linenumbers
 
@@ -72,28 +84,27 @@ poroelasticity \sep viscoelasticity \sep FEniCS \sep mixed finite elements
 Coupled poromechanical processes govern a wide range of geophysical phenomena,
 from aquifer compaction and land subsidence to fault reactivation and induced
 seismicity. The theory of poroelasticity, first formulated by Biot
-\cite{Biot1941}, describes the interaction between solid deformation and fluid
+\citeyearpar{Biot1941}, describes the interaction between solid deformation and fluid
 flow in porous media. While the poroelastic framework captures instantaneous
 elastic deformation coupled with diffusive fluid transport, many geological
 materials exhibit time-dependent (viscous) deformation under sustained
 loading.
 
 Viscoelastic behavior in rocks and soils arises from grain boundary sliding,
-microcrack growth, and fluid-rock chemical interactions \cite{Jaeger2007}.
+microcrack growth, and fluid-rock chemical interactions \citep{Jaeger2007}.
 Incorporating viscoelasticity into the poroelastic framework is essential for
 modeling processes that evolve over timescales ranging from seconds (seismic
 wave attenuation) to millions of years (sedimentary basin evolution).
-Poro-viscoelastic models have been applied to post-seismic deformation
-\cite{Ferronato2009}, fluid injection in reservoirs \cite{Nespoli2023}, and
-the evolution of differential stress that controls earthquake frequency-magnitude
-distributions \cite{Scholz1968, GuliaWiemer2019}.
+Poro-viscoelastic models have been applied to the evolution of differential
+stress that controls earthquake frequency-magnitude distributions
+\citep{Scholz1968, GuliaWiemer2019}.
 
 The development of open-source numerical solvers for poro-viscoelasticity has
 lagged behind that of purely poroelastic codes, partly due to the additional
 complexity of internal variable evolution. The Generalized Poroelastic Model
-using FEniCS (GPMF) \cite{Haagenson2020} provides a well-verified, modular
+using FEniCS (GPMF) \citep{Haagenson2020} provides a well-verified, modular
 implementation of linear and nonlinear poroelasticity using the FEniCS finite
-element library \cite{Logg2012, Alnass2015}. GPMF solves the coupled system
+element library \citep{Logg2012, Alnass2015}. GPMF solves the coupled system
 of momentum balance, fluid mass conservation, and Darcy's law using a mixed
 finite element formulation with a monolithic solve. It has been validated
 against analytical solutions (Terzaghi, Mandel, soil heaving) and applied to
@@ -124,7 +135,7 @@ $\bm{u}$, the pore pressure perturbation $p$, and the fluid flux $\bm{q}$.
 
 \subsection{Poroelastic constitutive relations}
 
-Following Biot's theory \cite{Biot1941}, the total stress tensor $\bm{\sigma}$
+Following Biot's theory \citeyearpar{Biot1941}, the total stress tensor $\bm{\sigma}$
 is decomposed into an effective stress $\bm{\sigma}'$ and a fluid pressure
 contribution:
 \begin{equation}
@@ -163,7 +174,7 @@ and $K_f$ is the fluid bulk modulus.
 
 \subsection{Viscoelastic creep: Generalized Maxwell model}
 
-We adopt the Generalized Maxwell (Wiechert) model \cite{Christensen1982}, which
+We adopt the Generalized Maxwell (Wiechert) model \citep{Christensen1982}, which
 represents the material as an equilibrium (long-term) elastic spring in parallel
 with $N$ non-equilibrium Maxwell branches. Each branch $k$ consists of a spring
 of stiffness $\mathbb{C}_k$ in series with a dashpot of viscosity $\bm{\eta}_k$.
@@ -236,7 +247,7 @@ and the viscoelastic evolution~\eqref{eq:creep_isotropic}.
 
 \subsection{Mixed finite element formulation}
 
-We adopt the same mixed finite element spaces as GPMF \cite{Haagenson2020}.
+We adopt the same mixed finite element spaces as GPMF \citep{Haagenson2020}.
 Let $\mathcal{T}_h$ be a conforming triangulation of $\Omega$. We define:
 \begin{align}
 p &\in W_h^p = \{ v \in L^2(\Omega) : v|_T \in \mathcal{P}_0(T) \},
@@ -373,7 +384,7 @@ poroelastic limit (Terzaghi consolidation) and one for the viscoelastic limit
 \subsection{Terzaghi consolidation}
 \label{sec:terzaghi}
 
-The Terzaghi problem \cite{Terzaghi1923} describes one-dimensional consolidation
+The Terzaghi problem \citep{Terzaghi1923} describes one-dimensional consolidation
 of a fluid-saturated column of height $H$ subjected to an instantaneous surface
 load $p_0$. The top boundary is drained ($p=0$) and the bottom is impermeable
 ($q=0$). The analytical pore pressure solution is:
@@ -396,7 +407,7 @@ Figure~\ref{fig:terzaghi} shows excellent agreement between the numerical and
 analytical solutions for the pore pressure evolution at mid-height and along
 the column at $t = 10^7$~s.
 
-\begin{figure}[H]
+\begin{figure}
   \centering
   \includegraphics[width=0.62\textwidth]{fig-terzaghi.png}
   \caption{Terzaghi consolidation: pore pressure evolution at mid-height
@@ -423,7 +434,7 @@ $E_2 = 3 \times 10^7$~Pa, $\tau_1 = 10^3$~s, and $\tau_2 = 10^5$~s. The
 analytical relaxation modulus is shown in Fig.~\ref{fig:relaxation}, confirming
 the two characteristic relaxation times.
 
-\begin{figure}[H]
+\begin{figure}
   \centering
   \includegraphics[width=0.62\textwidth]{fig-relaxation.png}
   \caption{Normalized stress relaxation modulus $E(t)/E(0)$ for the
@@ -445,7 +456,7 @@ undrained pressurization, (ii) a poroelastic dissipation phase with fluid
 diffusion, and (iii) a delayed viscoelastic creep phase as the solid skeleton
 relaxes.
 
-\begin{figure}[H]
+\begin{figure}
   \centering
   \includegraphics[width=0.62\textwidth]{fig-coupled.png}
   \caption{Coupled poro-viscoelastic loading: pore pressure at mid-height and
@@ -457,8 +468,8 @@ relaxes.
 \subsection{GPMF-style comparison}
 \label{sec:gpmf}
 
-We reproduce the poroelastic consolidation benchmark of Haagenson et
-al.\ \cite{Haagenson2020} (Figs.~2--3) with viscoelastic enhancement, using a
+We reproduce the poroelastic consolidation benchmark of
+\citet{Haagenson2020} (Figs.~2--3) with viscoelastic enhancement, using a
 lower permeability $k = 5 \times 10^{-15}$~m$^2$ to achieve the target
 dimensionless times $\tau = c_v t / H^2 \in \{0.05, 0.1, 0.2, 0.5, 1.0\}$.
 All other material parameters are identical to
@@ -475,7 +486,7 @@ poro-viscoelastic settlement exceeds the drained elastic prediction by a factor
 of $1/w_\infty = 1.667$, reaching $u_\infty = 0.926$~mm compared to
 $u_{\text{drained}} = 0.556$~mm.
 
-\begin{figure}[H]
+\begin{figure}
   \centering
   \includegraphics[width=0.83\textwidth]{fig-gpmf2.png}
   \caption{Normalized pore pressure profiles at target dimensionless times
@@ -483,7 +494,7 @@ $u_{\text{drained}} = 0.556$~mm.
   \label{fig:gpmf2}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
   \centering
   \includegraphics[width=0.83\textwidth]{fig-gpmf3.png}
   \caption{Surface displacement (left) and degree of consolidation (right)
@@ -522,7 +533,7 @@ rapidly while the low-permeability layers retain elevated pore pressure,
 demonstrating the coupling between heterogeneous hydraulic properties and
 viscoelastic deformation.
 
-\begin{figure}[H]
+\begin{figure}
   \centering
   \includegraphics[width=0.62\textwidth]{fig-application.png}
   \caption{Layered medium under vertical overburden loading: (a) model setup
@@ -549,11 +560,11 @@ modifying the mixed element formulation or the monolithic solver.
 Figure~\ref{fig:catchy} shows a composite visualization of the poro-viscoelastic
 consolidation process, including the pore pressure evolution at mid-height,
 surface settlement curve, degree of consolidation, and final-state pore pressure
-and vertical displacement profiles. A corresponding animation
-(simulation.mp4) shows the full transient evolution from the undrained elastic
-response through poroelastic dissipation to the viscoelastic creep limit.
+and vertical displacement profiles. The full transient evolution from the
+undrained elastic response through poroelastic dissipation to the viscoelastic
+creep limit is shown in a corresponding animation.
 
-\begin{figure}[H]
+\begin{figure}
   \centering
   \includegraphics[width=\textwidth]{fig-catchy.png}
   \caption{Composite figure summarizing the poro-viscoelastic consolidation
@@ -582,11 +593,23 @@ relaxation time. An implicit coupled formulation, including the viscous strains
 as additional unknowns in the monolithic system, would improve stability for
 large time steps but would increase the system size significantly.
 
-\subsection{Code availability and reproducibility}
+\section*{Code availability}
 
-The source code, documentation, and benchmark scripts are available on GitHub.
-We encourage community contributions and further validation against laboratory
-and field data.
+PoroViscoFEniCS is an open-source library written in Python and built on the
+FEniCS framework (version 2017.2.0 or later). The source code, documentation,
+and benchmark scripts are freely available under the MIT license at
+\href{https://github.com/ogiannopoulou/PoroViscoFEniCS}{github.com/ogiannopoulou/\\
+PoroViscoFEniCS}.
+
+\begin{itemize}
+  \item\textbf{Name of the code:} PoroViscoFEniCS.
+  \item\textbf{Contact:} ourania.giannopoulou@gmail.com.
+  \item\textbf{Hardware requirements:} any standard desktop computer.
+  \item\textbf{Program language:} Python (FEniCS 2017.2.0 or later).
+  \item\textbf{Software required:} FEniCS, meshio, XDMF viewer (e.g., ParaView).
+  \item\textbf{Program size:} $\approx$ 600 lines of code.
+  \item\textbf{Repository:} \url{https://github.com/ogiannopoulou/PoroViscoFEniCS}.
+\end{itemize}
 
 %=============================================================================
 \section{Conclusions}
@@ -613,8 +636,9 @@ strain variables. Key features include:
 PoroViscoFEniCS provides a flexible, open-source tool for modeling
 time-dependent poromechanical processes in geophysics, including post-seismic
 deformation, reservoir compaction, and fluid-induced seismicity. The code
-is available at \href{https://github.com/ogiannopoulou/PoroViscoFEniCS}{github.com/\\
-username/PoroViscoFEniCS}.
+is available at
+\href{https://github.com/ogiannopoulou/PoroViscoFEniCS}{github.com/ogiannopoulou/\\
+PoroViscoFEniCS}.
 
 %=============================================================================
 \section*{Acknowledgments}
@@ -626,7 +650,7 @@ poro-viscoelastic modeling. The original GPMF code by Ryan Haagenson, Harihar Ra
 Joseph Allen provided the foundation for this work.
 
 %=============================================================================
-\bibliographystyle{elsarticle-num}
+\bibliographystyle{cas-model2-names}
 \bibliography{references}
 
 \end{document}
